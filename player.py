@@ -100,7 +100,7 @@ class MusicPlayer:
 			try: return self.jump(user_in[1])
 			except: return "No track number supplied."
 		elif user_in[0] == "STOP":
-			self.stop()
+			return self.stop()
 		elif user_in[0] == "REPEAT":
 			self.playlist.repeat = not(self.playlist.repeat)
 			return "REPEAT is now %s" % ("ON" if self.playlist.repeat else "OFF")
@@ -126,6 +126,7 @@ class MusicPlayer:
 	def stop(self):
 		self.playing = False
 		self.stopPlayer()
+		return "Playback stopped."
 
 	def next(self):
 		if self.playlist.next() and self.playing:
