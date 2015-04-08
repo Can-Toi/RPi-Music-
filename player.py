@@ -3,18 +3,20 @@
 from sys import argv
 from playlist import Playlist, PlaylistItem
 from NameSplit import nameSplit
-from subprocess import Popen, PIPE, STDOUT
+from subprocess import Popen, PIPE, STDOUT, call
 from threading import Thread
 
 class MusicPlayer:
 	cmd = ['mpg321','-R','RPi']
-
+	volume = 0 #Specified in gain dB
+	
 	def __init__(self):
 		self.init = True
 		self.prun = False
 		self.perror = 0
 		self.playing = False
 		self.playlist = Playlist()
+		self.adjustVolume(0)
 
 	def openPlayer(self):
 		if not(self.prun):
@@ -36,6 +38,15 @@ class MusicPlayer:
 			return "Stopped player"
 		else:
 			return "Player not running"
+
+	def adjustVolume(self,adjust):
+		try:
+			MusicPlayer.volume = max(-100,min(0,MusicPlayer.volume+int(adjust)))
+		except TypeError:
+			return "[Error] Adjustment is not a number"
+		finally:
+			call(["amixer","-q","set","PCM","--",str(MusicPlayer.volume)+"dB"])
+			return "Set volume to %s" % str(MusicPlayer.volume)+"dB"
 
 	def send(self,mesg):
 		self.p.stdin.write(mesg + "\n")
@@ -109,6 +120,16 @@ class MusicPlayer:
 				return "%s" % self.playlist.setlibrary(user_in[1])
 			except IndexError:
 				return "Current library PATH is: %s" % Playlist.root
+		elif user_in[0] == "VOLUME":
+			try:
+				if user_in[1] == "UP":
+					return self.adjustVolume(1)
+				elif user_in[1] == "DOWN":
+					return self.adjustVolume(-1)
+				else:
+					return "Unknown argument"
+			except IndexError:
+				return "Current volume is %s" % str(MusicPlayer.volume) + "dB"
 		else:
 			return "Unknown command."
 
