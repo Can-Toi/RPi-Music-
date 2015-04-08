@@ -1,9 +1,0 @@
-#!/usr/bin/env python
-
-import zmq
-
-class MusicServer:
-
-	def __init__(self):
-		self.c = zmq.context()
-		self.socket = self.c.socket(zmq.REP)
