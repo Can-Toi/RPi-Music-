@@ -9,7 +9,7 @@ from threading import Thread
 class MusicPlayer:
 	cmd = ['mpg321','-R','RPi']
 	volume = 0 #Specified in gain dB
-	
+
 	def __init__(self):
 		self.init = True
 		self.prun = False
