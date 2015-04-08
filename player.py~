@@ -142,7 +142,7 @@ class MusicPlayer:
 		self.playlist.prev(self.playing)
 		if self.playing:
 			self.play()
-		return "Moved to item: %s" % self.playlist.cursor + 1
+		return "Moved cursor to: %s" % self.playlist.cursor + 1
 	
 	def jump(self,cursor):
 		if self.playlist.jump(cursor):
