@@ -14,6 +14,7 @@ class MusicPlayer:
 		self.init = True
 		self.prun = False
 		self.perror = 0
+		self.errorlog = []
 		self.playing = False
 		self.playlist = Playlist()
 		self.adjustVolume(0)
@@ -58,10 +59,14 @@ class MusicPlayer:
 			if get_output[0] == "@P":
 				if get_output[1] == "3":
 					self.next()
-			if get_output[0] == "@E":
+			elif get_output[0] == "@E":
 				self.perror += 1
+				self.errorlog.append(" ".join(get_output[1:]))
 				if self.perror > 10:
+					for item in self.errorlog: print("ERRORLOG: %s" % item)
 					self.quit()
+			elif get_output[0] == "@F":
+				pass
 
 	def quit(self):
 		self.stopPlayer()
@@ -130,6 +135,8 @@ class MusicPlayer:
 					return "Unknown argument"
 			except IndexError:
 				return "Current volume is %s" % str(MusicPlayer.volume) + "dB"
+		elif user_in[0] == "ERRORLOG":
+			return "\n".join(self.errorlog)
 		else:
 			return "Unknown command."
 
