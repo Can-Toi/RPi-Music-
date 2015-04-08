@@ -15,6 +15,8 @@ class MusicPlayer:
 		self.prun = False
 		self.perror = 0
 		self.errorlog = []
+		self.first_out = ("","","","")
+		self.current_out =("","","","")
 		self.playing = False
 		self.playlist = Playlist()
 		self.adjustVolume(0)
@@ -56,7 +58,9 @@ class MusicPlayer:
 	def readoutput(self):
 		while self.prun:
 			get_output = self.p.stdout.readline().strip("\n").split(" ")
-			if get_output[0] == "@P":
+			if get_output[0] == "@S":
+				new_load = True
+			elif get_output[0] == "@P":
 				if get_output[1] == "3":
 					self.next()
 			elif get_output[0] == "@E":
@@ -66,7 +70,11 @@ class MusicPlayer:
 					for item in self.errorlog: print("ERRORLOG: %s" % item)
 					self.quit()
 			elif get_output[0] == "@F":
-				pass
+				if new_load:
+					self.first_out = (get_output[1],get_output[2],get_output[3],get_output[4])
+					new_load = False
+				else:
+					self.current_out = (get_output[1],get_output[2],get_output[3],get_output[4])
 
 	def quit(self):
 		self.stopPlayer()
@@ -137,6 +145,8 @@ class MusicPlayer:
 				return "Current volume is %s" % str(MusicPlayer.volume) + "dB"
 		elif user_in[0] == "ERRORLOG":
 			return "\n".join(self.errorlog)
+		elif user_in[0] == "STATUS":
+			return "%s" % " ".join(self.current_out)
 		else:
 			return "Unknown command."
 
