@@ -9,3 +9,4 @@ Please note that:
   - mpg321
   - mp3info
   - amixer/alsamixer
+* There is currently no install method, nor documententation. The player, however, works via ssh. (Using package 'screen' or similar is recommended)
